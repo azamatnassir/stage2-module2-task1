@@ -3,6 +3,8 @@ package com.example.servlet;
 import com.example.User;
 import com.example.Warehouse;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,15 +15,27 @@ import java.io.IOException;
 public class AddUserServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("jsp/add.jsp");
+        try {
+            requestDispatcher.forward(req, resp);
+        } catch (ServletException | IOException e) {
+            e.fillInStackTrace();
+        }
+    }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         String firstName = req.getParameter("firstName");
-        String secondName = req.getParameter("secondName");
+        String lastName = req.getParameter("lastName");
+        User user = new User(firstName, lastName);
+        Warehouse warehouse = Warehouse.getInstance();
+        warehouse.addUser(user);
 
-        User user = new User(firstName, secondName);
-        Warehouse.getInstance().addUser(user);
-
-        req.setAttribute("user", user);
-        resp.sendRedirect("/add");
+        try {
+            resp.sendRedirect("/add");
+        } catch (IOException e) {
+            e.fillInStackTrace();
+        }
     }
 }
