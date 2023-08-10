@@ -17,6 +17,7 @@ public class AddUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("jsp/add.jsp");
+
         try {
             requestDispatcher.forward(req, resp);
         } catch (ServletException | IOException e) {
@@ -28,9 +29,12 @@ public class AddUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         String firstName = req.getParameter("firstName");
         String lastName = req.getParameter("lastName");
+
         User user = new User(firstName, lastName);
         Warehouse warehouse = Warehouse.getInstance();
         warehouse.addUser(user);
+
+        req.setAttribute("user", user);
 
         try {
             resp.sendRedirect("/add");
